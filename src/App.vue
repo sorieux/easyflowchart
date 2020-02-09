@@ -7,7 +7,6 @@
       dark
       flat
     >
-      <div class="d-flex align-center">
         <v-img
           alt="Vuetify Logo"
           class="shrink mr-2"
@@ -17,7 +16,12 @@
           width="40"
         />
         <v-toolbar-title class="headline font-weight-black">EasyFlowchart</v-toolbar-title>
-      </div>
+        <v-spacer></v-spacer>
+        <ExportButton />
+        <PrintButton />
+        <v-btn icon>
+          <v-icon>mdi-settings</v-icon>
+        </v-btn>
     </v-app-bar>
     <v-content>
       <router-view></router-view>
@@ -26,13 +30,18 @@
 </template>
 
 <script>
+import PrintButton from './components/PrintButton.vue';
+import ExportButton from './components/ExportButton.vue';
 
 export default {
   name: 'App',
 
   components: {
+    PrintButton,
+    ExportButton,
   },
-
+  methods: {
+  },
   data: () => ({
     //
   }),
@@ -40,4 +49,27 @@ export default {
 </script>
 
 <style lang="scss">
+  html, body {
+    height: 100%;
+  }
+  #app{
+    height: 100%;
+    .section{
+      margin: 0rem;
+      padding: 0rem;
+    }
+    .easyflowchart-container{
+      height: 93%;
+      min-height: 93%;
+      display: flex;
+      flex-direction: column;
+      .boxf {
+        display: flex;
+        flex-direction: column;
+      }
+      .boxf-1 {
+        flex: 1;
+      }
+    }
+  }
 </style>

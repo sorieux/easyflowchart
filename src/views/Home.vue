@@ -5,7 +5,7 @@
         <editor v-model="code" @init="editorInit" lang="dot" theme="chrome"
                 width="100%" height="100%"></editor>
       </pane>
-      <pane size="70"><div id="graph"></div></pane>
+      <pane size="70"><GraphvizViewer :dotCode="this.code"/></pane>
     </splitpanes>
   </div>
 </template>
@@ -16,12 +16,12 @@ import { Splitpanes, Pane } from 'splitpanes';
 import 'splitpanes/dist/splitpanes.css';
 import editor from 'vue2-ace-editor';
 import { mapGetters } from 'vuex';
-import 'd3-graphviz';
-import * as d3 from 'd3';
+import GraphvizViewer from '../components/GraphvizViewer.vue';
 
 export default {
   name: 'home',
   components: {
+    GraphvizViewer,
     Splitpanes,
     Pane,
     editor,
@@ -36,18 +36,10 @@ export default {
     this.code = this.$store.getters.getDotEditorContent;
   },
   mounted() {
-    const width = document.getElementById('app').offsetWidth * 0.7;
-    const height = document.getElementById('app').offsetHeight;
-
-    d3.select('#graph').graphviz().width(width).height(height)
-      .renderDot(this.code);
   },
   updated() {
     this.$nextTick(() => {
       this.$store.dispatch('updateDotEditorContent', this.code);
-
-      d3.select('#graph').graphviz()
-        .renderDot(this.code);
     });
   },
   computed: {
