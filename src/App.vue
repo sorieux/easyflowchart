@@ -19,9 +19,7 @@
         <v-spacer></v-spacer>
         <ExportButton />
         <PrintButton />
-        <v-btn icon>
-          <v-icon>mdi-settings</v-icon>
-        </v-btn>
+        <SettingsButton v-if="false"/>
     </v-app-bar>
     <v-content>
       <router-view></router-view>
@@ -32,11 +30,13 @@
 <script>
 import PrintButton from './components/PrintButton.vue';
 import ExportButton from './components/ExportButton.vue';
+import SettingsButton from './components/SettingsButton.vue';
 
 export default {
   name: 'App',
 
   components: {
+    SettingsButton,
     PrintButton,
     ExportButton,
   },
