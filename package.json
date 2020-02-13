@@ -12,6 +12,7 @@
     "core-js": "^3.4.4",
     "d3": "^5.15.0",
     "d3-graphviz": "^2.6.1",
+    "file-saver": "^2.0.2",
     "jspdf-yworks": "2.0.1",
     "print-js": "^1.0.63",
     "save-svg-as-png": "^1.4.17",

@@ -48,6 +48,9 @@ export default {
     }),
   },
   watch: {
+    getDotEditorContent(newContent) {
+      this.updateDotEditorContent(newContent);
+    },
   },
   methods: {
     editorInit() {
@@ -56,6 +59,9 @@ export default {
       require('brace/mode/dot'); // language
       require('brace/theme/chrome');
       /* eslint-enable */
+    },
+    updateDotEditorContent(newContent) {
+      this.code = newContent;
     },
   },
 };

@@ -17,6 +17,8 @@
         />
         <v-toolbar-title class="headline font-weight-black">EasyFlowchart</v-toolbar-title>
         <v-spacer></v-spacer>
+        <SaveButton />
+        <LoadButton />
         <ExportButton />
         <PrintButton />
         <SettingsButton v-if="false"/>
@@ -31,6 +33,8 @@
 import PrintButton from './components/PrintButton.vue';
 import ExportButton from './components/ExportButton.vue';
 import SettingsButton from './components/SettingsButton.vue';
+import SaveButton from './components/SaveButton.vue';
+import LoadButton from './components/LoadButton.vue';
 
 export default {
   name: 'App',
@@ -39,6 +43,8 @@ export default {
     SettingsButton,
     PrintButton,
     ExportButton,
+    SaveButton,
+    LoadButton,
   },
   methods: {
   },
