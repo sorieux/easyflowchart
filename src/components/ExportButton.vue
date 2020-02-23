@@ -47,7 +47,7 @@ export default {
       }
     },
     exportToPNG() {
-      svgToPng.saveSvgAsPng(document.getElementById('graph').firstChild, 'diagram.png', { scale: 2 });
+      svgToPng.saveSvgAsPng(document.getElementById('graph').firstChild, 'easyflowchart.png', { scale: 2 });
     },
     exportToPDF() {
       const svgElement = document.getElementById('graph').firstChild;
@@ -65,7 +65,7 @@ export default {
       });
 
       // or simply save the created pdf
-      pdf.save('myPDF.pdf');
+      pdf.save('easyflowchart.pdf');
     },
   },
   data: () => ({

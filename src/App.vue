@@ -1,9 +1,9 @@
 <template>
   <v-app>
-    <v-app-bar app color="#36d1b2" dense dark flat>
-        <v-img alt="Vuetify Logo" class="shrink mr-2" contain src="./assets/neural.svg"
-          transition="scale-transition"
-          width="40"
+    <v-app-bar class="flowchart-nav" app color="#36d1b2" dense dark flat>
+        <v-img alt="Flowchart Logo" class="shrink mr-2" contain src="./assets/flow-chart.svg"
+               transition="scale-transition"
+               width="55"
         />
         <v-toolbar-title class="headline font-weight-black">EasyFlowchart</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -45,6 +45,11 @@ export default {
   html, body {
     margin: 0;
     height: 100%;
-    overflow: hidden
+    overflow: hidden;
+  }
+  .flowchart-nav{
+    .v-toolbar__content{
+      padding-left: 0.1rem;
+    }
   }
 </style>

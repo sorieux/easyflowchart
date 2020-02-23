@@ -11,9 +11,6 @@ export default {
   name: 'GrapvizViewer',
   components: {
   },
-  props: {
-    dotCode: String,
-  },
   data() {
     return {
       code: '',
