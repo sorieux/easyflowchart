@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    dotEditorContent: '# https://graphviz.gitlab.io\n'
+    dotEditorContent: '// https://graphviz.gitlab.io\n'
       + '\n'
       + 'digraph finite_state_machine {\n'
       + '\trankdir=LR;\n'
@@ -27,18 +27,26 @@ export default new Vuex.Store({
       + '\tLR_8 -> LR_6 [ label = "S(b)" ];\n'
       + '\tLR_8 -> LR_5 [ label = "S(a)" ];\n'
       + '}',
+    errorMsg: null,
   },
   getters: {
     getDotEditorContent: state => state.dotEditorContent,
+    getErrorMsg: state => state.errorMsg,
   },
   mutations: {
     UPDATE_DOT_EDITOR_CONTENT: (state, content) => {
       state.dotEditorContent = content;
     },
+    UPDATE_ERROR_MSG: (state, content) => {
+      state.errorMsg = content;
+    },
   },
   actions: {
     updateDotEditorContent: ({ commit }, newContent) => {
       commit('UPDATE_DOT_EDITOR_CONTENT', newContent);
+    },
+    updateErrorMsg: ({ commit }, newContent) => {
+      commit('UPDATE_ERROR_MSG', newContent);
     },
   },
   modules: {

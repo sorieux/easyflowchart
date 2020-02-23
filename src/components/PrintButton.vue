@@ -1,6 +1,7 @@
 <template>
   <v-btn icon>
-    <v-icon class="print-button" v-on:click="exportToPDF">mdi-printer</v-icon>
+    <v-icon class="print-button" title="Print flowchart"
+            v-on:click="exportToPDF">mdi-printer</v-icon>
   </v-btn>
 </template>
 

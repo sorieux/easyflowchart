@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" persistent max-width="600px">
     <template v-slot:activator="{ on }">
       <v-btn icon>
-        <v-icon class="export-button" v-on="on">mdi-export-variant</v-icon>
+        <v-icon class="export-button" v-on="on" title="Export flowchart">mdi-export-variant</v-icon>
       </v-btn>
     </template>
     <v-card>

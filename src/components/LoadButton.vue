@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" persistent max-width="600px">
     <template v-slot:activator="{ on }">
       <v-btn icon>
-        <v-icon class="load-button" v-on="on">mdi-file-upload-outline</v-icon>
+        <v-icon class="load-button" title="Load Dot file" v-on="on">mdi-file-upload-outline</v-icon>
       </v-btn>
     </template>
     <v-card>

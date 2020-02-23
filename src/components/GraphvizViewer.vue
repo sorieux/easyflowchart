@@ -7,14 +7,6 @@ import 'd3-graphviz';
 import * as d3 from 'd3';
 import { mapGetters } from 'vuex';
 
-// function transitionFactory() {
-//   return d3.transition('main')
-//     .ease(d3.easeLinear)
-//     .delay(40)
-//     .duration(300);
-// }
-
-
 export default {
   name: 'GrapvizViewer',
   components: {
@@ -37,7 +29,12 @@ export default {
     this.height = document.getElementById('app').offsetHeight;
 
     d3.select('#graph').graphviz().width(this.width).height(this.height)
-      .renderDot(this.code);
+      .tweenShapes(false)
+      .convertEqualSidedPolygons(false)
+      .onerror((errorMsg) => {
+        this.updateErrorMsg(errorMsg);
+      })
+      .renderDot(this.code, this.updateErrorMsg(null));
   },
   updated() {
   },
@@ -49,12 +46,19 @@ export default {
   watch: {
     getDotEditorContent() {
       this.code = this.$store.getters.getDotEditorContent;
-      d3.select('#graph').graphviz().width(this.width)
-        .height(this.height)
-        .renderDot(this.code);
+      d3.select('#graph').graphviz().width(this.width).height(this.height)
+        .tweenShapes(false)
+        .convertEqualSidedPolygons(false)
+        .onerror((errorMsg) => {
+          this.updateErrorMsg(errorMsg);
+        })
+        .renderDot(this.code, this.updateErrorMsg(null));
     },
   },
   methods: {
+    updateErrorMsg(newContent) {
+      this.$store.dispatch('updateErrorMsg', newContent);
+    },
   },
 };
 </script>

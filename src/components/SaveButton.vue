@@ -1,6 +1,7 @@
 <template>
   <v-btn icon>
-    <v-icon class="save-button" v-on:click="saveDot">mdi-file-download-outline</v-icon>
+    <v-icon class="save-button" v-on:click="saveDot"
+            title="Save Dot file">mdi-file-download-outline</v-icon>
   </v-btn>
 </template>
 
