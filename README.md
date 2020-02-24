@@ -28,4 +28,4 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-Demo : http://easyflowchart.s3-website.eu-west-3.amazonaws.com/
+Demo : https://sorieux.github.io/easyflowchart/
