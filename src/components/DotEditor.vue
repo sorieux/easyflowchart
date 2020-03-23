@@ -1,4 +1,4 @@
-<template>
+<template v-slot:extension>
   <AceEditor mode="dot" theme="chrome" name="editor" :value="code" :onChange="onChange"
              height="100%"
              width="100%"

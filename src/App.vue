@@ -7,9 +7,8 @@
         />
         <v-toolbar-title class="headline font-weight-black">EasyFlowchart</v-toolbar-title>
         <v-spacer></v-spacer>
-        <SaveButton />
         <LoadButton />
-        <ExportButton />
+        <SaveButton />
         <PrintButton />
     </v-app-bar>
     <v-content class="content">
@@ -20,7 +19,6 @@
 
 <script>
 import PrintButton from './components/PrintButton.vue';
-import ExportButton from './components/ExportButton.vue';
 import SaveButton from './components/SaveButton.vue';
 import LoadButton from './components/LoadButton.vue';
 
@@ -29,7 +27,6 @@ export default {
 
   components: {
     PrintButton,
-    ExportButton,
     SaveButton,
     LoadButton,
   },

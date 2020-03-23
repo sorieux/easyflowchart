@@ -26,7 +26,10 @@ export default {
     this.height = document.getElementById('app').offsetHeight;
 
     d3.select('#graph').graphviz().width(this.width).height(this.height)
+      .fit(false)
+      .zoomScaleExtent([0.01, 10])
       .tweenShapes(false)
+      .tweenPaths(false)
       .convertEqualSidedPolygons(false)
       .onerror((errorMsg) => {
         this.updateErrorMsg(errorMsg);
@@ -42,9 +45,15 @@ export default {
   },
   watch: {
     getDotEditorContent() {
+      this.width = document.getElementById('app').offsetWidth * 0.7;
+      this.height = document.getElementById('app').offsetHeight;
+
       this.code = this.$store.getters.getDotEditorContent;
       d3.select('#graph').graphviz().width(this.width).height(this.height)
+        .fit(false)
+        .zoomScaleExtent([0.01, 10])
         .tweenShapes(false)
+        .tweenPaths(false)
         .convertEqualSidedPolygons(false)
         .onerror((errorMsg) => {
           this.updateErrorMsg(errorMsg);
