@@ -100,7 +100,7 @@ export default {
   data: () => ({
     code: null,
     dotTable: null,
-    showByIndex: 1,
+    showByIndex: null,
   }),
   created() {
     this.code = this.$store.getters.getDotEditorContent;
