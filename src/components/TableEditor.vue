@@ -9,7 +9,7 @@
       </tr>
       </thead>
       <tbody>
-      <template v-for="(row, index) in dotTable">
+      <template v-for="(row, index) in jsonDotGraph.nodes">
         <tr :key="`r-${index}`">
           <td class="prefix-td"
               :key="`r-${index}-prefix`"
@@ -18,26 +18,30 @@
             <span class="row-number" v-show="showByIndex !== index || index === 0">{{index}}</span>
             <v-icon class="remove-row-button" title="Remove Row"
                       v-show="showByIndex === index && index > 0"
-                      v-on:click="deleteRow(index)">mdi-trash-can-outline
+                      v-on:click="deleteRow(index, row.v)">mdi-trash-can-outline
             </v-icon>
           </td>
           <td :key="`col1-${index}`">
             <input
-              class="input is-medium"
+              class="input is-medium node-input"
               type="text"
-              :value="row[0]"
+              :value="row.v"
               :ref="`${index}-col1`"
-              v-on:change="updateNodeName($event, index)"
+              v-on:change="updateNodeName($event, row.v, index)"
             >
+            <OptionsButton :nodeName="row.v" :options="[row]" type="node"
+                           :callback="updateOptions"/>
           </td>
-          <td>
+          <td :key="`col2-${index}`">
             <input
-              class="input is-medium"
+              class="input is-medium predecessor-input"
               type="text"
-              :value="row[1]"
-              :ref="`${index}-col1`"
-              v-on:change="updatePredecessors($event, index)"
+              :value="getPredecessors(row.v)"
+              :ref="`${index}-col2`"
+              v-on:change="updatePredecessors($event, row.v)"
             >
+            <OptionsButton :nodeName="row.v" :options="getPredecessorOptions(row.v)"
+                           type="predecessor" :callback="updateOptions"/>
           </td>
         </tr>
       </template>
@@ -51,6 +55,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import dot from 'graphlib-dot';
+import OptionsButton from './OptionsButton.vue';
 
 const graphlib = require('graphlib');
 
@@ -88,102 +93,100 @@ const addNewNode = function addNewNode(nodeId, nodesArray) {
   return [...nodesArray, { v: nodeId, value: {} }];
 };
 
-// eslint-disable-next-line no-unused-vars
-const addNewEdge = function addNewEdge(nodeIdOrigin, nodeIdDestination, edgesArray) {
-  return [...edgesArray, { v: nodeIdOrigin, w: nodeIdDestination }];
-};
-
 export default {
   name: 'TableEditor',
   components: {
+    OptionsButton,
   },
   data: () => ({
     code: null,
-    dotTable: null,
+    jsonDotGraph: null,
     showByIndex: null,
   }),
   created() {
     this.code = this.$store.getters.getDotEditorContent;
-    this.dotTable = this.dot2Array(this.code);
+
+    const graph = dot.read(this.code);
+    this.jsonDotGraph = graphlib.json.write(graph);
   },
   methods: {
-    dot2Array(dotCode) {
-      const graph = dot.read(dotCode);
-
-      // Find technical nodes (like SG[0-9]+)
-      const technicalNodes = new Set();
-      graph.nodes().forEach((node) => {
-        const parent = graph.parent(node);
-        if (parent) {
-          technicalNodes.add(parent);
-        }
-      });
-
-      const realNodes = graph.nodes().filter(x => ![...technicalNodes].includes(x));
-
-      const dotTable = [];
-
-      realNodes.forEach((nodeId) => {
-        dotTable.push([nodeId, graph.predecessors(nodeId)]);
-      });
-      return dotTable;
-    },
-    updateNodeName(event, index) {
-      const oldNodeId = this.dotTable[index][0];
+    updateNodeName(event, nodeName, index) {
+      const oldNodeId = nodeName;
       const newNodeId = event.target.value;
-      this.dotTable[index][0] = newNodeId;
-
-      const graph = dot.read(this.code);
-      const jsonDotGraph = graphlib.json.write(graph);
 
       let newNodesArray = [];
       let newEdgesArray = [];
-      if (nodeIdIsExist(oldNodeId, jsonDotGraph.nodes) && oldNodeId) {
-        newNodesArray = updateNodeId(oldNodeId, newNodeId, jsonDotGraph.nodes);
-        newEdgesArray = updateEdges(oldNodeId, newNodeId, jsonDotGraph.edges);
+      if (nodeIdIsExist(oldNodeId, this.jsonDotGraph.nodes) && oldNodeId) {
+        newNodesArray = updateNodeId(oldNodeId, newNodeId, this.jsonDotGraph.nodes);
+        newEdgesArray = updateEdges(oldNodeId, newNodeId, this.jsonDotGraph.edges);
       } else {
-        newNodesArray = addNewNode(newNodeId, jsonDotGraph.nodes);
-        newEdgesArray = jsonDotGraph.edges;
+        newNodesArray = addNewNode(newNodeId, this.jsonDotGraph.nodes);
+        newNodesArray.splice(index, 1);
+        newEdgesArray = this.jsonDotGraph.edges;
       }
 
-      const newJsonDotGraph = { ...jsonDotGraph };
+      const newJsonDotGraph = { ...this.jsonDotGraph };
       newJsonDotGraph.nodes = newNodesArray;
       newJsonDotGraph.edges = newEdgesArray;
 
-      const g = graphlib.json.read(newJsonDotGraph);
+      this.jsonDotGraph = { ...newJsonDotGraph };
+
+      const g = graphlib.json.read(this.jsonDotGraph);
       this.code = dot.write(g);
-      this.dotTable = this.dot2Array(this.code);
       this.$store.dispatch('updateDotEditorContent', this.code);
     },
-    updatePredecessors(event, index) {
+    updatePredecessors(event, nodeName) {
       const newValues = event.target.value.split(/,|;/);
-      const nodeIdOrigin = this.dotTable[index][0];
-      this.dotTable[index][1] = newValues;
+      const nodeIdOrigin = nodeName;
 
-      const graph = dot.read(this.code);
-      const jsonDotGraph = graphlib.json.write(graph);
-
-      // Remove Current Node Edges
-      const newEdgesArray = [...jsonDotGraph.edges].filter(el => el.w !== nodeIdOrigin);
+      const newEdgesArray = [...this.jsonDotGraph.edges].filter(el => el.w !== nodeIdOrigin);
       newValues.forEach((node) => {
         newEdgesArray.push({ v: node, w: nodeIdOrigin });
       });
 
-      const newJsonDotGraph = { ...jsonDotGraph };
+      const newJsonDotGraph = { ...this.jsonDotGraph };
       newJsonDotGraph.edges = newEdgesArray;
 
       const g = graphlib.json.read(newJsonDotGraph);
       this.code = dot.write(g);
-      this.dotTable = this.dot2Array(this.code);
       this.$store.dispatch('updateDotEditorContent', this.code);
     },
     addRow() {
-      this.dotTable.push(['', '']);
+      this.jsonDotGraph.nodes.push({});
     },
-    deleteRow(index) {
+    deleteRow(index, nodeName) {
       if (index > 0) {
-        this.dotTable.splice(index, 1);
+        this.jsonDotGraph.nodes.splice(index, 1);
+        this.jsonDotGraph.edges = this.jsonDotGraph.edges.filter(obj => obj.v !== nodeName
+          && obj.w !== nodeName);
+        const g = graphlib.json.read(this.jsonDotGraph);
+        this.code = dot.write(g);
+        this.$store.dispatch('updateDotEditorContent', this.code);
       }
+    },
+    getPredecessors(nodeName) {
+      return this.jsonDotGraph.edges.filter(obj => obj.w === nodeName).map(obj => obj.v);
+    },
+    updateOptions(nodeName, optionsType, newOptions) {
+      const newJsonDotGraph = { ...this.jsonDotGraph };
+
+      if (optionsType === 'node') {
+        newJsonDotGraph.nodes = [...newJsonDotGraph.nodes]
+          .map(obj => newOptions.find(o => o.v === obj.v) || obj);
+      } else if (optionsType === 'predecessor') {
+        let newEdgesArray = [];
+        newEdgesArray = [...newJsonDotGraph.edges].filter(obj => obj.w !== nodeName);
+        newJsonDotGraph.edges = [...newEdgesArray, ...newOptions];
+      }
+
+      this.jsonDotGraph = newJsonDotGraph;
+
+      const g = graphlib.json.read(newJsonDotGraph);
+      this.code = dot.write(g);
+      this.$store.dispatch('updateDotEditorContent', this.code);
+    },
+    getPredecessorOptions(nodeName) {
+      return this.jsonDotGraph.edges.filter(obj => obj.w === nodeName);
     },
   },
   computed: {
@@ -195,6 +198,14 @@ export default {
 </script>
 
 <style lang="scss">
+  .node-options-row-button {
+    font-size: 1rem !important;
+  }
+
+  .node-input, .predecessor-input {
+    width: 90%;
+  }
+
   .add-row-button:focus {
     outline: none;
   }

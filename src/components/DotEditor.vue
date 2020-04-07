@@ -23,7 +23,12 @@ export default {
     annotations: [],
   }),
   created() {
-    this.code = this.$store.getters.getDotEditorContent;
+    if (this.$route.query.base64Url) {
+      this.code = window.atob(this.$route.query.base64Url);
+      this.$store.dispatch('updateDotEditorContent', this.code);
+    } else {
+      this.code = this.$store.getters.getDotEditorContent;
+    }
   },
   updated() {
     this.$nextTick(() => {
