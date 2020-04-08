@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     generateBase6URL() {
-      return `${window.location.origin}?base64Url=${window.btoa(this.$store.getters.getDotEditorContent)}`;
+      return `${window.location.origin}?base64Url=${encodeURIComponent(window.btoa(this.$store.getters.getDotEditorContent))}`;
     },
     openModal() {
       this.base64UrlString = this.generateBase6URL();
