@@ -41,7 +41,7 @@
     "canvas": "2.6.1",
     "eslint": "5.16.0",
     "eslint-plugin-vue": "5.2.3",
-    "node-sass": "4.13.1",
+    "node-sass": "7.0.0",
     "sass": "1.25.0",
     "sass-loader": "8.0.2",
     "utf-8-validate": "5.0.2",
